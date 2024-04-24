@@ -17,6 +17,73 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
+
+@Composable
+@Preview
+fun Usuario(
+    usuario: String,
+    onEsribir: (String) -> Unit
+){
+    OutlinedTextField(
+        // Lo q imprime
+        value = usuario,
+        // Cada vez que cambie (al pulsar una tecla por ej)
+        onValueChange = onEsribir,
+        modifier = Modifier
+            .padding(bottom = 10.dp),
+        label = { Text("Usuario") },
+    )
+}
+
+@Composable
+@Preview
+fun Contrasenia(
+    contrasenia: String,
+    onChanguePass: (String) -> Unit,
+    contraseniaVisible: Boolean,
+    onVisPasswdChange: (Boolean) -> Unit
+){
+    OutlinedTextField(
+        value = contrasenia,
+        onValueChange = onChanguePass,
+        label = { Text("Contraseña") },
+        // Muestra la contraseña como *** cuando modo visible este en OFF
+        visualTransformation = if(!contraseniaVisible) PasswordVisualTransformation() else VisualTransformation.None,
+        // Icono para mostrar o dejar de mostrar contraseña
+        trailingIcon = {
+            IconToggleButton(
+                checked = contraseniaVisible,
+                onCheckedChange = onVisPasswdChange
+            ){
+                // Crear icono
+                Icon(
+                    // Depende de true o flase, muestra un icono o otro
+                    imageVector = if (contraseniaVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    contentDescription = "Pass")
+            }
+        }
+    )
+}
+
+@Composable
+@Preview
+fun BotonLogin(
+    botonActivado: Boolean,
+    onClick: () -> Unit
+){
+    Button(
+        onClick = onClick,
+        enabled = botonActivado
+    ){
+        Text(
+            text = "Login"
+        )
+    }
+}
+
+
+
+
 @Composable
 @Preview
 fun App() {
@@ -37,36 +104,11 @@ fun App() {
 
         ){
 
-            OutlinedTextField(
-                value = usuario,
-                onValueChange = {usuario = it},
-                modifier = Modifier
-                    .padding(bottom = 10.dp),
-                label = { Text("Usuario") },
-            )
+            Usuario(usuario) { usuario = it }
 
-            OutlinedTextField(
-                value = contrasenia,
-                onValueChange = {contrasenia = it},
-                label = { Text("Contraseña") },
-                // Muestra la contraseña como *** cuando modo visible este en OFF
-                visualTransformation = if(!contraseniaVisible) PasswordVisualTransformation() else VisualTransformation.None,
-                // Icono para mostrar o dejar de mostrar contraseña
-                trailingIcon = {
-                    IconToggleButton(
-                        checked = contraseniaVisible, onCheckedChange = {contraseniaVisible = it}){
-                        Icon(
-                            imageVector = if (contraseniaVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = "Pass")
-                    }
-                }
-            )
+            Contrasenia(contrasenia, {contrasenia = it}, contraseniaVisible) { contraseniaVisible = it }
 
-            Button(onClick = {usuario = ""; contrasenia = ""}, enabled = botonActivado){
-                Text(
-                    text = "Login"
-                )
-            }
+            BotonLogin(botonActivado) { usuario = ""; contrasenia = "" }
         }
     }
 }
